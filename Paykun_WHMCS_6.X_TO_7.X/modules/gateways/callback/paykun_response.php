@@ -47,17 +47,20 @@ if(isset($response['payment-id'])) {
             $result = mysql_fetch_assoc(select_query('tblinvoices', 'total, userid', array("id" => $PK_order_id)));
             $amount = $result['total'];
             logTransaction($PK_GATEWAY_PARAM['name'], $PK_resAmout, $amount);
-            if(($amount	== $PK_resAmout)) {
-                addInvoicePayment(
-                    $invoiceId,
-                    $PK_transactionId,
-                    $amount,
-                    $PK_responseData['data']['transaction']['order']['gateway_fee'] + $PK_responseData['data']['transaction']['order']['tax'],
-                    $PK_GATEWAY_PARAM['name']
-                );
+
+            addInvoicePayment(
+                $invoiceId,
+                $PK_transactionId,
+                $amount,
+                $PK_responseData['data']['transaction']['order']['gateway_fee'] + $PK_responseData['data']['transaction']['order']['tax'],
+                $PK_GATEWAY_PARAM['name']
+            );
+
+            /*if(($amount	== $PK_resAmout)) {
+
             } else {
                 logTransaction($PK_GATEWAY_PARAM['name'], $PK_responseData, 'Order Mismatched => '.'OrderAmount = '.$amount. ', responseAmount = '.$PK_resAmout);
-            }
+            }*/
 
             $filename=str_replace('modules/gateways/callback/paykun_response.php','viewinvoice.php?id='.$PK_order_id, $returnResponse);
             header("Location: $filename");
